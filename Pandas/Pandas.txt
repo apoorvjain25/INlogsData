@@ -1,0 +1,309 @@
+################## Pandas ##########################
+
+#The pandas library is an open source Python library, specially designed for data analysis. 
+#It has been built on NumPy and makes it easy to handle data. 
+#NumPy is a fairly low-level tool that handles matrices really well. 
+#The pandas library brings the richness of R in the world of Python to handle data. 
+#It's has efficient data structures to process data, perform fast joins, and read data from various sources, to name a few. 
+
+The pandas library essentially has three data structures: 
+
+1. Series 
+2. DataFrame 
+3. Panel 
+
+#####################################################
+
+######### Series ########
+
+Series is a one-dimensional array, which can hold any type of data, such as integers, floats, strings, and Python objects too. 
+A series can be created by calling the following:
+
+>>> import pandas as pd 
+>>> pd.Series(np.random.randn(5))
+
+############# DataFrame ################# 
+
+DataFrame is a 2D data structure with columns that can be of different datatypes. It can be seen as a table. 
+A DataFrame can be formed from the following data structures: 
+
+• A NumPy array 
+• Lists 
+• Dicts 
+• Series 
+• A 2D NumPy array
+
+A DataFrame can be created from a dict of series by calling the following commands:
+
+>>> d = {'c1': pd.Series(['A', 'B', 'C']),        
+	'c2': pd.Series([1, 2., 3., 4.])} 
+>>> df = pd.DataFrame(d) 
+>>> df
+
+##Output:
+
+   c1  c2 
+0    A   1 
+1    B   2 
+2    C   3 
+3  NaN   4 
+
+
+################### Panel #####################
+
+A Panel is a data structure that handles 3D data. 
+The following command is an example of panel data:
+
+>>> d = {'Item1': pd.DataFrame(np.random.randn(4, 3)),    
+	'Item2': pd.DataFrame(np.random.randn(4, 2))} 
+>>> pd.Panel(d)
+
+########### Inserting and exporting data ######################
+
+##CSV 
+
+To read data from a .csv file, the following read_csv function can be used:
+
+>>> d = pd.read_csv('Data/Student_Weight_Status_Category_           
+	Reporting_Results__Beginning_2010.csv') 
+>>> d[0:5]['AREA NAME']
+
+To write a data to the .csv file, the following to_csv function can be used:
+
+>>> d = {'c1': pd.Series(['A', 'B', 'C']),    
+	'c2': pd.Series([1, 2., 3., 4.])} 
+>>> df = pd.DataFrame(d) 
+>>> df.to_csv('sample_data.csv') 
+
+##Databases
+
+To read data from a database, the following function can be used:
+>>> pd.read_sql_table(table_name, con)
+
+The following command reads SQL query into a DataFrame:
+>>> pd.read_sql_query(sql, con)
+
+##XLS 
+
+In addition to the pandas package, the xlrd package needs to be installed for pandas to read the data from an Excel file:
+
+>>> d=pd.read_excel('Data/Student_Weight_Status_Category         
+	_Reporting_Results__Beginning_2010.xls') 
+
+The preceding function is similar to the CSV reading command. To write to an Excel file, the xlwt package needs to be installed:
+>>> df.to_excel('sample_data.xls')
+
+############## Data Cleaning ###################
+
+##Checking the missing data
+
+In the Student Weight data, to check if the location column has missing value,  the following command can be utilized:
+>>> d['Location 1'].isnull() 
+
+0       False 
+1       False 
+2       False 
+3       False 
+4       False 
+5       False 
+6       False 
+
+The notnull() method will output each row of the value as TRUE or FALSE. 
+If it's False, then there is a missing value. This data can be aggregated to find the number of instances of the missing value:
+
+>>> d['Location 1'].isnull().value_counts() 
+
+False    3246 
+True       24
+
+##Filling the missing value
+
+Let's define some DataFrames to work with:
+
+>>> df = pd.DataFrame(np.random.randn(5, 3), index=['a0', 'a10',                    
+	'a20', 'a30', 'a40'], columns=['X', 'Y', 'Z'])
+>>> df            
+
+	X         Y         Z 
+a0  -0.854269  0.117540  1.515373 
+a10 -0.483923 -0.379934  0.484155 
+a20 -0.038317  0.196770 -0.564176 
+a30  0.752686  1.329661 -0.056649 
+a40 -1.383379  0.632615  1.274481 
+
+We'll now add some extra row indexes, which will create null values in our DataFrame:
+>>> df2 = df2.reindex(['a0', 'a1', 'a10', 'a11', 'a20', 'a21',                
+	'a30', 'a31', 'a40', 'a41']) 
+>>> df2
+            
+
+	X         Y         Z 
+a0  -1.193371  0.912654 -0.780461 
+a1        NaN       NaN       NaN 
+a10  1.413044  0.615997  0.947334 
+a11       NaN       NaN       NaN 
+a20  1.583516  1.388921  0.458771 
+a21       NaN       NaN       NaN 
+a30  0.479579  1.427625  1.407924 
+a31       NaN       NaN       NaN 
+a40  0.455510 -0.880937  1.375555 
+a41       NaN       NaN       NaN 
+
+If you want to replace the null values in the df2 DataFrame with a value of zero in the following case, execute the following command:
+>>> df2.fillna(0)
+
+##String operations
+
+#Substring 
+
+Let's start by choosing the first five rows of the AREA NAME column in the data as our sample data to modify: 
+
+>>> df = pd.read_csv('Data/Student_Weight_Status_Category_         
+	Reporting_Results__Beginning_2010.csv') 
+>>> df['AREA NAME'][0:5]
+
+0    RAVENA COEYMANS SELKIRK CENTRAL SCHOOL DISTRICT 
+1    RAVENA COEYMANS SELKIRK CENTRAL SCHOOL DISTRICT 
+2    RAVENA COEYMANS SELKIRK CENTRAL SCHOOL DISTRICT 
+3                        COHOES CITY SCHOOL DISTRICT 
+4                        COHOES CITY SCHOOL DISTRICT 
+
+Name: AREA NAME, dtype: object 
+
+In order to extract the first word from the Area Name column, we'll use the extract function as shown in the following command: 
+
+>>> df['AREA NAME'][0:5].str.extract('(\w+)')
+0    RAVENA 
+1    RAVENA 
+2    RAVENA 
+3    COHOES 
+4    COHOES 
+
+#Filtering 
+
+If we want to filter rows with data on ELEMENTARY school, then the following command can be used: 
+>>> df[df['GRADE LEVEL'] == 'ELEMENTARY']
+
+#Uppercase: 
+
+To convert the area name to uppercase, we'll use the  following command: 
+>>> df['AREA NAME'][0:5].str.upper() 
+
+#Lowercase: 
+
+To convert Area Name to lowercase, we'll use the  following command: 
+>>> df['AREA NAME'][0:5].str.lower() 
+
+#Length 
+
+To find the length of each element of the Area Name column, we'll use the following command: 
+>>> df['AREA NAME'][0:5].str.len() 
+
+#Split 
+
+To split Area Name based on a whitespace, we'll use the  following command: 
+>>> df['AREA NAME'][0:5].str.split(' ')
+
+#Replace 
+
+If we want to replace all the area names ending with DISTRICT to DIST, then the following command can be used: 
+>>> df['AREA NAME'][0:5].str.replace('DISTRICT$', 'DIST')
+
+################# Merging data #####################
+
+To combine datasets together, the concat function of pandas can be utilized.  
+Let's take the Area Name and the County columns with its first five rows:
+
+>>> d[['AREA NAME', 'COUNTY']][0:5]
+
+The first two rows of the data are in p1 and the last three rows are in p2. These pieces can be combined using the concat() function:
+>>> pd.concat([p1,p2])
+
+########### Aggregation operations ######################
+
+Average: To find out the average number of students in the ELEMENTARY school who are obese, we'll first filter the ELEMENTARY data with the following command: 
+>>> data = d[d['GRADE LEVEL'] == 'ELEMENTARY'] 
+213.41593780369291 
+
+Now, we'll find the mean using the following command: 
+>>> data['NO. OBESE'].mean() 
+
+SUM: To find out the total number of elementary students who are obese across all the school, use the following command: 
+>>> data['NO. OBESE'].sum() 219605.0 
+
+MAX: To get the maximum number of students that are obese in an elementary school, use the following command: 
+>>> data['NO. OBESE'].max() 48843.0
+
+MIN: To get the minimum number of students that are obese in an elementary school, use the following command: 
+>>> data['NO. OBESE'].min() 5.0 
+
+COUNT: To count the total number of schools with the ELEMENTARY grade in the DELAWARE county, use the following command: 
+
+>>> data = df[(d['GRADE LEVEL'] == 'ELEMENTARY') &            
+	(d['COUNTY'] == 'DELAWARE')] 
+>>> data['COUNTY'].count() 19 
+
+####################### Joins ##################################
+
+SQL-like joins can be performed on the DataFrame using pandas. 
+
+Let's define  a lookup DataFrame, which assigns levels to each of the grades using the  following command:
+>>> grade_lookup = {'GRADE LEVEL': pd.Series(['ELEMENTARY','MIDDLE/HIGH', 'MISC']),               
+			'LEVEL': pd.Series([1, 2, 3])}
+>>> grade_lookup = DataFrame(grade_lookup)
+
+Let's take the first five rows of the GRADE data column as an example for performing the joins:
+>>> df[['GRADE LEVEL']][0:5]     
+
+      GRADE LEVEL 
+0  DISTRICT TOTAL 
+1      ELEMENTARY 
+2     MIDDLE/HIGH 
+3  DISTRICT TOTAL 
+4      ELEMENTARY 
+
+##Inner Join
+
+An inner join can be performed with the following command:
+
+>>> d_sub = df[0:5].join(grade_lookup.set_index(['GRADE LEVEL']),            
+	on=['GRADE LEVEL'], how='inner') 
+>>> d_sub[['GRADE LEVEL', 'LEVEL']]
+
+## Left outer join
+
+A left outer join can be performed with the following commands:
+
+>>> d_sub = df[0:5].join(grade_lookup.set_index(['GRADE LEVEL']), on=['GRADE LEVEL'], how='left') 
+>>> d_sub[['GRADE LEVEL', 'LEVEL']]
+
+## Full outer join
+
+The full outer join can be performed with the following commands:
+
+>>> d_sub = df[0:5].join(grade_lookup.set_index(['GRADE LEVEL']),              
+		on=['GRADE LEVEL'], how='outer') 
+>>> d_sub[['GRADE LEVEL', 'LEVEL']]
+
+## Groupby function
+
+>>> df['NO. OBESE'].groupby(d['GRADE LEVEL']).sum() 
+
+############################################################################################################## 
+  
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
