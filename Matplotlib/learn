@@ -1,1 +1,230 @@
+######################################## Matplotlib #######################################
 
+#Matplotlib can be used for creating plots and charts. The library is generally used as follows:
+ Call a plotting function with some data (e.g. .plot()).
+ Call many functions to setup the properties of the plot (e.g. labels and colors).
+ Make the plot visible (e.g. .show()).
+
+#In particular, we will be using the matplotlib.pyplot module. 
+#In its simplest use, pyplot maintains an internal state in which you build up a visualization step by step.
+
+##Graph
+
+from matplotlib import pyplot as plt
+
+years = [1950, 1960, 1970, 1980, 1990, 2000, 2010]
+gdp = [300.2, 543.3, 1075.9, 2862.5, 5979.6, 10289.7, 14958.3]
+
+# create a line chart, years on x-axis, gdp on y-axis
+plt.plot(years, gdp, color='green', marker='o', linestyle='solid')
+# add a title
+plt.title("Nominal GDP")
+
+# add a label to the y-axis
+plt.ylabel("Billions of $")
+plt.show()
+
+##Bar Charts
+
+movies = ["Annie Hall", "Ben-Hur", "Casablanca", "Gandhi", "West Side Story"]
+num_oscars = [5, 11, 3, 8, 10]
+
+# bars are by default width 0.8, so we'll add 0.1 to the left coordinates
+# so that each bar is centered
+xs = [i + 0.1 for i, _ in enumerate(movies)]
+
+# plot bars with left x-coordinates [xs], heights [num_oscars]
+plt.bar(xs, num_oscars)
+
+plt.ylabel("# of Academy Awards")
+plt.title("My Favorite Movies")
+
+# label x-axis with movie names at bar centers
+plt.xticks([i + 0.5 for i, _ in enumerate(movies)], movies)
+
+plt.show()
+
+##Line Plot
+
+# basic line plot 
+import matplotlib.pyplot as plt 
+import numpy 
+myarray = numpy.array([1, 2, 3]) 
+plt.plot(myarray) 
+plt.xlabel('some x axis')
+plt.ylabel('some y axis') 
+plt.show()
+
+##Scatter Plot
+
+# basic scatter plot 
+import matplotlib.pyplot as plt 
+import numpy 
+x = numpy.array([1, 2, 3]) 
+y = numpy.array([2, 4, 6]) 
+plt.scatter(x,y) 
+plt.xlabel('some x axis') 
+plt.ylabel('some y axis') 
+plt.show()
+
+##Pie-chart
+
+import matplotlib.pyplot as plt
+
+slices = [7,2,2,13]
+activities = ['sleeping','eating','working','playing']
+cols = ['c','m','r','b']
+
+plt.pie(slices,
+        labels=activities,
+        colors=cols,
+        startangle=90,
+        shadow= True,
+        explode=(0,0.1,0,0),
+        autopct='%1.1f%%')
+
+plt.title('Interesting Graph\nCheck it out')
+plt.show()
+
+##Load data from files for visualization
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+x, y = np.loadtxt('example.txt', delimiter=',', unpack=True)
+plt.plot(x,y, label='Loaded from file!')
+
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Interesting Graph\nCheck it out')
+plt.legend()
+plt.show()
+
+########################################## Seaborn #########################################
+
+##Seaborn provides a high-level interface to Matplotlib, a powerful but sometimes unwieldy Python visualization library.
+
+##Importing libraries and dataset
+
+import pandas as pd
+from matplotlib import pyplot as plt
+%matplotlib inline
+import seaborn as sns
+
+# Read dataset
+df = pd.read_csv('Pokemon.csv', index_col=0)
+
+##Seaborn's plotting function
+
+# Recommended way
+sns.lmplot(x='Attack', y='Defense', data=df)
+ 
+# Alternative way
+# sns.lmplot(x=df.Attack, y=df.Defense)
+# Scatterplot arguments
+sns.lmplot(x='Attack', y='Defense', data=df,
+           fit_reg=False, # No regression line
+           hue='Stage')   # Color by evolution stage
+          
+##Customizing with Matplotlib   
+
+# Plot using Seaborn
+sns.lmplot(x='Attack', y='Defense', data=df,
+           fit_reg=False, 
+           hue='Stage')
+ 
+# Tweak using Matplotlib
+plt.ylim(0, None)
+plt.xlim(0, None)
+
+##The role of Pandas
+
+# Boxplot
+sns.boxplot(data=df)
+# Pre-format DataFrame
+stats_df = df.drop(['Total', 'Stage', 'Legendary'], axis=1)
+ 
+# New boxplot using stats_df
+sns.boxplot(data=stats_df)
+
+##Seaborn themes
+
+# Set theme
+sns.set_style('whitegrid')
+ 
+# Violin plot
+sns.violinplot(x='Type 1', y='Attack', data=df)
+
+##Overlaying plots
+
+# Set figure size with matplotlib
+plt.figure(figsize=(10,6))
+ 
+# Create plot
+sns.violinplot(x='Type 1',
+               y='Attack', 
+               data=df, 
+               inner=None, # Remove the bars inside the violins
+               palette=pkmn_type_colors)
+ 
+sns.swarmplot(x='Type 1', 
+              y='Attack', 
+              data=df, 
+              color='k', # Make points black
+              alpha=0.7) # and slightly transparent
+ 
+# Set title with matplotlib
+plt.title('Attack by Type')
+
+##Heatmap
+
+# Calculate correlations
+corr = stats_df.corr()
+ 
+# Heatmap
+sns.heatmap(corr)
+
+##Histogram
+
+# Distribution Plot (a.k.a. Histogram)
+sns.distplot(df.Attack)
+
+##Bar Plot
+
+# Count Plot (a.k.a. Bar Plot)
+sns.countplot(x='Type 1', data=df, palette=pkmn_type_colors)
+ 
+# Rotate x-labels
+plt.xticks(rotation=-45)
+
+##Factor Plot
+
+# Factor Plot
+g = sns.factorplot(x='Type 1', 
+                   y='Attack', 
+                   data=df, 
+                   hue='Stage',  # Color by stage
+                   col='Stage',  # Separate by stage
+                   kind='swarm') # Swarmplot
+ 
+# Rotate x-axis labels
+g.set_xticklabels(rotation=-45)
+ 
+# Doesn't work because only rotates last plot
+plt.xticks(rotation=-45)
+
+##Density Plot
+
+# Density Plot
+sns.kdeplot(df.Attack, df.Defense)
+
+##Joint Distribution Plot
+
+sns.jointplot(x='Attack', y='Defense', data=df)
+
+##################################################################################
+
+
+
+
+  
